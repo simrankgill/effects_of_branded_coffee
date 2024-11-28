@@ -1,0 +1,224 @@
+---
+title: "Untitled"
+author: "Simran Gill"
+date: "2024-11-27"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading data
+
+
+```{r reading data}
+library(data.table)
+library(gridExtra)
+library(stargazer)
+library(ggplot2)
+library(dplyr) 
+library(car)
+
+control <- read.csv("Coffee Survey Control (Responses) - Form Responses 1.csv") 
+treatment <- read.csv("Coffee Survey Group II (Responses) - Form Responses 1.csv")
+
+# rename column names for control
+colnames(control) <- c('timestamp', 'good_and_gather_score', 'chameleon_score', 'age', 'gender','how_often_drink_coffee', 'hot_or_cold', 'sweet_or_not_sweet', 'good_and_gather_awareness','chameleon_awareness', 'medical_condition', 'name')
+# rename column names for treatment
+colnames(treatment) <- c('timestamp', 'name','good_and_gather_score', 'chameleon_score', 'age', 'gender','how_often_drink_coffee', 'hot_or_cold', 'sweet_or_not_sweet', 'medical_condition','good_and_gather_awareness','chameleon_awareness')
+# reorder column names for treatment
+treatment <- treatment[, c('timestamp', 'good_and_gather_score', 'chameleon_score', 'age', 'gender','how_often_drink_coffee', 'hot_or_cold', 'sweet_or_not_sweet', 'good_and_gather_awareness','chameleon_awareness', 'medical_condition', 'name')]
+
+control$treatment <- 0
+control$age <- as.integer(control$age)
+
+treatment$treatment <- 1
+treatment$age <- as.integer(treatment$age)
+
+d <- rbind(control, treatment)
+
+# removing rows where age is null
+d <- d %>%
+  filter(!is.na(age))
+
+# creating age groups
+d$age_group <- cut(d$age,
+                   breaks = c(0, 20, 30, 40, 50, Inf),
+                   labels = c("Under 20", "20-30", "31-40", "41-50", "Over 50"),
+                   right = FALSE)
+
+
+# Convert how_often_drink_coffee to integer by factoring 
+d$how_often_drink_coffee <- factor(d$how_often_drink_coffee,
+                                   levels = c("Never", 
+                                              "Occasionally (up to 1 time a week)", 
+                                              "Sometimes (a few times a week)", 
+                                              "Often (almost every day)", 
+                                              "Every day"))
+
+str(d)
+```
+
+
+## Exploratory Data Analysis
+
+
+
+```{r box plot for age}
+# box plot for age by treatment and control
+
+boxplot(d$age, control$age, treatment$age,
+        names = c("Total", "Control", "Treatment"),
+        main = "Box Plots for Control and Treatment",
+        ylab = "Age",
+        col = c("#D8A7FF", "lightblue", "lightgreen"),
+        border = "black")
+```
+```{r gender by age group}
+
+ggplot(d, aes(x = treatment, fill = age_group)) +
+  geom_bar(position = "stack") +
+  labs(title = "Age Group by Control and Treatment", x = "Age Group", y = "Count") +
+  scale_fill_manual(values = c("#065143", "#129490", "#70B77E", "#E0A890", "#CE1483"))  +
+  theme_minimal()
+```
+
+```{r gender by age group}
+
+ggplot(d, aes(x = treatment, fill = chameleon_awareness)) +
+  geom_bar(position = "stack") +
+  labs(title = "Chameleon Awareness by Control and Treatment", x = "chameleon_awareness", y = "Count") +
+  scale_fill_manual(values = c("#70D6FF", "#FF70A6", "#FF9770", "#FFD670")) +
+  theme_minimal()
+```
+```{r gender by age group}
+
+ggplot(d, aes(x = treatment, fill = good_and_gather_awareness)) +
+  geom_bar(position = "stack") +
+  labs(title = "Good&Gather Awareness by Control and Treatment", x = "good_and_gather_awareness", y = "Count") +
+  scale_fill_manual(values = c("#70D6FF", "#FF70A6", "#FF9770", "#FFD670")) +
+  theme_minimal()
+```
+
+```{r Gender}
+
+### Control Group Gender ###
+control_gender_counts <- control %>%
+  group_by(gender) %>%
+  tally()
+
+control_pie <- ggplot(control_gender_counts, aes(x = "", y = n, fill = gender)) +
+  geom_bar(stat = "identity", width = 1) +  
+  coord_polar(theta = "y") + 
+  labs(title = "Gender Distribution for Control Group") +
+  scale_fill_manual(values = c("lightpink", "lightblue")) + 
+  theme_void()  
+
+### Treatment Group Gender ###
+treatment_gender_counts <- treatment %>%
+  group_by(gender) %>%
+  tally()
+
+treatment_pie <- ggplot(treatment_gender_counts, aes(x = "", y = n, fill = gender)) +
+  geom_bar(stat = "identity", width = 1) +  
+  coord_polar(theta = "y") + 
+  labs(title = "Gender Distribution for Treatment Group") +
+  scale_fill_manual(values = c("lightpink", "lightblue")) + 
+  theme_void() 
+
+grid.arrange(control_pie, treatment_pie, ncol = 2)
+```
+
+##  Simple Average Treatment Effect 
+
+```{r }
+ate_good_and_gather <- mean(d$good_and_gather_score[d$treatment == 1], na.rm = TRUE) -
+                       mean(d$good_and_gather_score[d$treatment == 0], na.rm = TRUE)
+cat("ATE Good & Gather:", ate_good_and_gather)
+     
+ate_chameleon <- mean(d$chameleon_score[d$treatment == 1], na.rm = TRUE) -
+                       mean(d$chameleon_score[d$treatment == 0], na.rm = TRUE)
+cat("\nATE Chameleon:", ate_chameleon)
+
+```
+## Average Treatment Effect using Linear Regression 
+
+```{r Good & Gather - Average Treatment Effect }
+# Basic Linear regression to estimate ATE
+model_gg <- lm(good_and_gather_score ~ treatment, data=d)
+ate_regression <- coef(model_gg)["treatment"]
+print(ate_regression)
+
+summary(model_gg)
+
+```
+```{r Chameleon - Average Treatment Effect }
+# Basic Linear regression to estimate ATE
+model_c <- lm(chameleon_score ~ treatment, data=d)
+ate_regression <- coef(model_c)["treatment"]
+print(ate_regression)
+
+summary(model_c)
+
+```
+# ATE Adjusted for Covariates 
+
+```{r Good & Gather Covariates }
+model_gg_covariates <- lm(good_and_gather_score ~ treatment + log(age) + gender + chameleon_awareness ,  data = d)
+
+ate_with_covariates <- coef(model_gg_covariates)["treatment"]
+print(ate_with_covariates)
+
+summary(model_gg_covariates)
+
+```
+```{r Good&Gather ANOVA}
+model_gg_covariates_v2 <- lm(good_and_gather_score ~ treatment + gender + log(age) + chameleon_awareness + good_and_gather_awareness,  data = d)
+
+anova(model_gg_covariates , model_gg_covariates_v2)
+
+```
+
+**Interpretation** We tested multiple covariates to see if we can improve the regression model for Good&Gather Score. The main covariates we see has a positive impact is how a participate views the Chameleon brand and age group. 
+
+When it comes to age, participants in the age group 30 - 39 and 40 - 49 are likely to rate Good & Gather higher after the brand is revealed. Because these two variables have some significants, age group does play a part in how a participant rates the coffee after treatment is provided. 
+
+When it comes to the Chameleon, even though the participants has a negative view of Chameleon coffee as a brand, they are still likely to score Good & Gather -1.8285 after treatment is provided. The p-value for Chameleon awareness is 0.0561, which means this variable is marginally significant. 
+
+We also wanted to test if adding Good&Gather brand awareness as a variable to model has an significant effect to the model. From the ANOVA test we can see that the p-value is 0.5600 which is greater than 0.05. This indicated Good&Gather brand awareness has no statistically significant impact on scoring the coffee.
+
+
+```{r }
+stargazer(model_gg_covariates, model_gg_covariates_v2, 
+          type = "text",   # Use "html" for HTML output or "latex" for LaTeX
+          title = "Regression Results for Good and Gather Score", 
+          covariate.labels = c("Treatment", "Age Group", "Gender", "Chameleon Awareness", "Good and Gather Awareness"),
+          star.cutoffs = c(0.10, 0.05, 0.01, 0.001),   # Significance stars
+          out = "regression_table.txt")  # Optional: Save output to a text file
+```
+
+c('timestamp', 'good_and_gather_score', 'chameleon_score', 'age', 'gender','how_often_drink_coffee', 'hot_or_cold', 'sweet_or_not_sweet', 'good_and_gather_awareness','chameleon_awareness', 'medical_condition', 'name')
+```{r Chameleon Covariates }
+model_c_covariates <- lm(chameleon_score ~ treatment + log(age) + gender + chameleon_awareness + good_and_gather_awareness ,  data = d)
+
+ate_with_covariates <- coef(model_c_covariates)["treatment"]
+print(ate_with_covariates)
+
+summary(model_c_covariates)
+
+```
+```{r Good&Gather ANOVA}
+model_c_covariates_v2 <- lm(chameleon_score ~ treatment + log(age) + gender + chameleon_awareness,  data = d)
+
+anova(model_c_covariates , model_c_covariates_v2)
+
+```
+```{r }
+stargazer(model_gg_covariates, model_gg_covariates_v2, 
+          type = "text",   # Use "html" for HTML output or "latex" for LaTeX
+          title = "Regression Results for Good and Gather Score", 
+          covariate.labels = c("Treatment", "Age Group", "Gender", "Chameleon Awareness", "Good and Gather Awareness"),
+          star.cutoffs = c(0.10, 0.05, 0.01, 0.001),   # Significance stars
+          out = "regression_table.txt")  # Optional: Save output to a text file
+```

@@ -35,20 +35,29 @@ treatment <- treatment[, c('timestamp', 'good_and_gather_score', 'chameleon_scor
 control$treatment <- 0
 control$age <- as.integer(control$age)
 
-treatment$treatment <- 1
-treatment$age <- as.integer(treatment$age)
-
-d <- rbind(control, treatment)
-
-cat("Number of Rows before cleaning:",nrow(d))
-
 # re-labeling gender
-d <- d %>%
+control <- control %>%
   mutate(gender = case_when(
     gender == "F" ~ "Female",
     gender == "M" ~ "Male",
     TRUE ~ "Unknown"
   ))
+
+treatment$treatment <- 1
+treatment$age <- as.integer(treatment$age)
+
+# re-labeling gender
+treatment <- treatment %>%
+  mutate(gender = case_when(
+    gender == "F" ~ "Female",
+    gender == "M" ~ "Male",
+    TRUE ~ "Unknown"
+  ))
+
+d <- rbind(control, treatment)
+
+cat("Number of Rows before cleaning:",nrow(d))
+
 
 # removing rows where age is null
 d <- d %>%
@@ -97,11 +106,6 @@ cat("Number of Rows for Treatment Group:", sum(d$treatment == 1))
 cat("\nNumber of Rows for Control Group:", sum(d$treatment == 0))
 ```
 
-```{r }
-unique(control$gender)
-unique(treatment$gender)
-```
-
 ```{r treatment by age group}
 
 ggplot(d, aes(x = treatment, fill = age_group)) +
@@ -139,7 +143,7 @@ control_pie <- ggplot(control_gender_counts, aes(x = "", y = n, fill = gender)) 
   geom_bar(stat = "identity", width = 1) +  
   coord_polar(theta = "y") + 
   labs(title = "Gender Distribution for Control Group") +
-  scale_fill_manual(values = c("purple","lightpink", "lightblue")) + 
+  scale_fill_manual(values = c("lightpink", "lightblue", "purple")) + 
   theme_void()  
 
 ### Treatment Group Gender ###

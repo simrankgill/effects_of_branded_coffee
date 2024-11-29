@@ -1,47 +1,54 @@
 Timestamp,"How would you score the taste for Coffee I? (7 being the best, 1 being the worst)","How would you score the taste for Coffee II? (7 being the best, 1 being the worst)",What is your age?,What is your gender?,How often do you drink coffee?,"If you drink coffee, do you usually take it hot or cold?","If you drink coffee, do you usually prefer it sweet or not sweet?","Are you aware of the brand Good & Gather? If yes, do you view them positively, negatively, or neutral?","Are you aware of the brand Chameleon? If yes, do you view them positively, negatively, or neutral?",Do you have any medical conditions that may impact your sense of taste?,What is your name?
-11/11/2024 9:36,3,5,34,M,Often (almost every day),Hot Coffee,Not Sweet,No,No,No,Kavin
-11/11/2024 9:38,3,5,21,M,Often (almost every day),Hot Coffee,Sweet,"Yes, Neutral",No,No,Arya Desai
-11/11/2024 9:41,1,5,27,F,Often (almost every day),Cold Coffee,Not Sweet,"Yes, Positive","Yes, Positive",No,Liz Ren
-11/11/2024 9:42,3,5,23,F,Often (almost every day),Hot Coffee,Not Sweet,"Yes, Positive",No,No,Halah Biviji
-11/11/2024 9:44,1,3,24,F,Often (almost every day),Cold Coffee,Not Sweet,No,"Yes, Negative",No,Taylor Parl 
-11/11/2024 9:46,5,4,35,F,Often (almost every day),Hot Coffee,Sweet,"Yes, Positive","Yes, Neutral",No,Sahana
-11/11/2024 9:47,4,2,24,M,Often (almost every day),Hot Coffee,Not Sweet,No,No,No,Ridge Coughlin
-11/11/2024 9:48,5,3,24,M,Often (almost every day),Hot Coffee,Not Sweet,No,No,No,Shang
-11/11/2024 9:55,5,3,old,M,Often (almost every day),Hot Coffee,Not Sweet,No,No,No,dwight browne
-11/11/2024 9:57,3,5,23,F,Sometimes (a few times a week),Hot Coffee,Sweet,"Yes, Positive","Yes, Positive",No,Elukiya Veerasingam
-11/11/2024 9:59,5,5,24,F,Occasionally (up to 1 time a week),No preference,Sweet,"Yes, Neutral",No,No,Ayushi
-11/11/2024 10:03,3,5,40,M,Often (almost every day),Hot Coffee,Not Sweet,"Yes, Neutral",No,No,ak
-11/11/2024 10:13,2,2,56,M,Often (almost every day),Hot Coffee,Sweet,No,No,No,Kurt
-11/11/2024 10:17,3,4,23,F,Sometimes (a few times a week),No preference,Sweet,"Yes, Negative",No,No,Maya Haylock
-11/11/2024 10:20,3,5,25,M,Often (almost every day),Cold Coffee,Sweet,"Yes, Neutral",No,No,Stephen Hei
-11/11/2024 10:21,4,2,24,M,Occasionally (up to 1 time a week),Cold Coffee,Not Sweet,"Yes, Neutral",No,No,Chris L
-11/12/2024 10:15,2,2,24,M,Often (almost every day),Hot Coffee,Not Sweet,No,No,No,Adam Grabowski
-11/12/2024 13:08,6,2,34,F,Occasionally (up to 1 time a week),Hot Coffee,Sweet,No,No,No,Cristina Andrade
-11/12/2024 13:11,3,2,24,M,Sometimes (a few times a week),Cold Coffee,Sweet,"Yes, Neutral",No,No,Cameron Bunge
-11/12/2024 13:14,6,2,40,F,Often (almost every day),Hot Coffee,Sweet,No,No,No,Cherisse Elias
-11/12/2024 13:16,6,1,34,F,Often (almost every day),Hot Coffee,Sweet,"Yes, Neutral",No,No,Melanie
-11/12/2024 13:17,6,2,23,F,Often (almost every day),Hot Coffee,Not Sweet,"Yes, Neutral",No,No,Tanesha Le
-11/12/2024 13:32,4,6,29,M,Sometimes (a few times a week),Cold Coffee,Not Sweet,"Yes, Positive","Yes, Positive",No,Oliver Yang
-11/12/2024 13:36,5,6,28,M,Often (almost every day),Cold Coffee,Not Sweet,No,No,No,Timothy Chu
-11/12/2024 13:39,5,5,44,M,Often (almost every day),Cold Coffee,Not Sweet,No,"Yes, Positive",No,Zack
-11/23/2024 12:14,3,2,20,F,Sometimes (a few times a week),Cold Coffee,Sweet,No,No,No,Ravleen 
-11/23/2024 12:28,4,5,45,F,Never,No preference,,No,No,No,kuldeep 
-11/23/2024 18:24,6,4,26,F,Often (almost every day) every day,Cold Coffee,Sweet,No,No,No,Annie Shah
-11/23/2024 18:25,5,2,24,F,Often (almost every day) every day,Cold Coffee,Sweet,No,No,No,Alifya Vohra
-11/23/2024 18:27,3,4,24,F,Often (almost every day) every day,No preference,Sweet,"Yes, Neutral",No,No,Navya
-11/23/2024 18:29,4,5,25,M,Often (almost every day) every day,Hot Coffee,Not Sweet,"Yes, Neutral",No,No,Derek Park
-11/23/2024 18:32,1,5,24,F,Sometimes (a few times a week),Cold Coffee,Sweet,"Yes, Neutral",No,No,Shivani Bangalore
-11/23/2024 18:33,3,2,19,M,Sometimes (a few times a week),Cold Coffee,Sweet,No,No,No,Balkaran
-11/23/2024 18:34,3,5,24,M,Often (almost every day) every day,Hot Coffee,Not Sweet,"Yes, Positive",No,No,irtiza ahmed
-11/23/2024 18:38,5,6,74,M,Sometimes (a few times a week),Hot Coffee,Not Sweet,"Yes, Positive",No,No,Paul Singh
-11/23/2024 18:39,4,5,26,M,Often (almost every day) every day,Cold Coffee,Sweet,"Yes, Neutral","Yes, Neutral",No,Shawn
-11/23/2024 18:42,2,3,60,F,Never,Hot Coffee,Sweet,No,No,No,Rani
-11/23/2024 18:43,3,6,27,M,Often (almost every day) every day,No preference,Sweet,No,"Yes, Negative",No,Krishna
-11/23/2024 18:44,5,1,26,M,Never,Cold Coffee,Sweet,No,No,No,Akhil Indur
-11/23/2024 18:44,5,4,34,F,Occasionally (up to 1 time a week),Hot Coffee,Sweet,"Yes, Positive",No,No,Rajwinder 
-11/23/2024 18:46,4,5,36,F,Occasionally (up to 1 time a week),Hot Coffee,Sweet,"Yes, Positive",No,No,Manu
-11/23/2024 18:47,5,6,45,M,Often (almost every day) every day,Hot Coffee,Not Sweet,"Yes, Positive","Yes, Positive",No,Lucky
-11/23/2024 18:50,5,4,31,F,Never,No preference,Sweet,"Yes, Positive",No,No,Priya
-11/23/2024 19:03,2,4,25,M,Often (almost every day) every day,Hot Coffee,Not Sweet,No,No,No,Gabe
-11/23/2024 19:10,5,3,25,F,Often (almost every day) every day,Hot Coffee,Sweet,"Yes, Positive","Yes, Neutral",No,Shruti Nair - T
-11/23/2024 19:11,6,4,25,M,Sometimes (a few times a week),Cold Coffee,Sweet,No,No,No,Sumitro Saha
+,,,,,,,,,,,
+11/11/2024 9:36:42,3,5,34,M,Often (almost every day),Hot Coffee,Not Sweet,No,No,No,Kavin
+11/11/2024 9:38:27,3,5,21,M,Often (almost every day),Hot Coffee,Sweet,"Yes, Neutral",No,No,Arya Desai
+11/11/2024 9:41:58,1,5,27,F,Often (almost every day),Cold Coffee,Not Sweet,"Yes, Positive","Yes, Positive",No,Liz Ren
+11/11/2024 9:42:33,3,5,23,F,Often (almost every day),Hot Coffee,Not Sweet,"Yes, Positive",No,No,Halah Biviji
+11/11/2024 9:44:43,1,3,24,F,Often (almost every day),Cold Coffee,Not Sweet,No,"Yes, Negative",No,Taylor Parl 
+11/11/2024 9:46:36,5,4,35,F,Often (almost every day),Hot Coffee,Sweet,"Yes, Positive","Yes, Neutral",No,Sahana
+11/11/2024 9:47:36,4,2,24,M,Often (almost every day),Hot Coffee,Not Sweet,No,No,No,Ridge Coughlin
+11/11/2024 9:48:41,5,3,24,M,Often (almost every day),Hot Coffee,Not Sweet,No,No,No,Shang
+11/11/2024 9:55:30,5,3,old,M,Often (almost every day),Hot Coffee,Not Sweet,No,No,No,dwight browne
+11/11/2024 9:57:26,3,5,23,F,Sometimes (a few times a week),Hot Coffee,Sweet,"Yes, Positive","Yes, Positive",No,Elukiya Veerasingam
+11/11/2024 9:59:10,5,5,24,F,Occasionally (up to 1 time a week),No preference,Sweet,"Yes, Neutral",No,No,Ayushi
+11/11/2024 10:03:18,3,5,40,M,Often (almost every day),Hot Coffee,Not Sweet,"Yes, Neutral",No,No,ak
+11/11/2024 10:13:46,2,2,56,M,Often (almost every day),Hot Coffee,Sweet,No,No,No,Kurt
+11/11/2024 10:17:32,3,4,23,F,Sometimes (a few times a week),No preference,Sweet,"Yes, Negative",No,No,Maya Haylock
+11/11/2024 10:20:21,3,5,25,M,Often (almost every day),Cold Coffee,Sweet,"Yes, Neutral",No,No,Stephen Hei
+11/11/2024 10:21:52,4,2,24,M,Occasionally (up to 1 time a week),Cold Coffee,Not Sweet,"Yes, Neutral",No,No,Chris L
+11/12/2024 10:15:16,2,2,24,M,Often (almost every day),Hot Coffee,Not Sweet,No,No,No,Adam Grabowski
+11/12/2024 13:08:51,6,2,34,F,Occasionally (up to 1 time a week),Hot Coffee,Sweet,No,No,No,Cristina Andrade
+11/12/2024 13:11:32,3,2,24,M,Sometimes (a few times a week),Cold Coffee,Sweet,"Yes, Neutral",No,No,Cameron Bunge
+11/12/2024 13:14:44,6,2,40,F,Often (almost every day),Hot Coffee,Sweet,No,No,No,Cherisse Elias
+11/12/2024 13:16:25,6,1,34,F,Often (almost every day),Hot Coffee,Sweet,"Yes, Neutral",No,No,Melanie
+11/12/2024 13:17:10,6,2,23,F,Often (almost every day),Hot Coffee,Not Sweet,"Yes, Neutral",No,No,Tanesha Le
+11/12/2024 13:32:59,4,6,29,M,Sometimes (a few times a week),Cold Coffee,Not Sweet,"Yes, Positive","Yes, Positive",No,Oliver Yang
+11/12/2024 13:36:17,5,6,28,M,Often (almost every day),Cold Coffee,Not Sweet,No,No,No,Timothy Chu
+11/12/2024 13:39:27,5,5,44,M,Often (almost every day),Cold Coffee,Not Sweet,No,"Yes, Positive",No,Zack
+11/23/2024 12:14:54,3,2,20,F,Sometimes (a few times a week),Cold Coffee,Sweet,No,No,No,Ravleen 
+11/23/2024 12:28:12,4,5,45,F,Never,No preference,,No,No,No,kuldeep 
+11/23/2024 18:24:10,6,4,26,F,Often (almost every day) every day,Cold Coffee,Sweet,No,No,No,Annie Shah
+11/23/2024 18:25:46,5,2,24,F,Often (almost every day) every day,Cold Coffee,Sweet,No,No,No,Alifya Vohra
+11/23/2024 18:27:51,3,4,24,F,Often (almost every day) every day,No preference,Sweet,"Yes, Neutral",No,No,Navya
+11/23/2024 18:29:59,4,5,25,M,Often (almost every day) every day,Hot Coffee,Not Sweet,"Yes, Neutral",No,No,Derek Park
+11/23/2024 18:32:49,1,5,24,F,Sometimes (a few times a week),Cold Coffee,Sweet,"Yes, Neutral",No,No,Shivani Bangalore
+11/23/2024 18:33:06,3,2,19,M,Sometimes (a few times a week),Cold Coffee,Sweet,No,No,No,Balkaran
+11/23/2024 18:34:04,3,5,24,M,Often (almost every day) every day,Hot Coffee,Not Sweet,"Yes, Positive",No,No,irtiza ahmed
+11/23/2024 18:38:08,5,6,74,M,Sometimes (a few times a week),Hot Coffee,Not Sweet,"Yes, Positive",No,No,Paul Singh
+11/23/2024 18:39:05,4,5,26,M,Often (almost every day) every day,Cold Coffee,Sweet,"Yes, Neutral","Yes, Neutral",No,Shawn
+11/23/2024 18:42:51,2,3,60,F,Never,Hot Coffee,Sweet,No,No,No,Rani
+11/23/2024 18:43:32,3,6,27,M,Often (almost every day) every day,No preference,Sweet,No,"Yes, Negative",No,Krishna
+11/23/2024 18:44:39,5,1,26,M,Never,Cold Coffee,Sweet,No,No,No,Akhil Indur
+11/23/2024 18:44:54,5,4,34,F,Occasionally (up to 1 time a week),Hot Coffee,Sweet,"Yes, Positive",No,No,Rajwinder 
+11/23/2024 18:46:02,4,5,36,F,Occasionally (up to 1 time a week),Hot Coffee,Sweet,"Yes, Positive",No,No,Manu
+11/23/2024 18:47:34,5,6,45,M,Often (almost every day) every day,Hot Coffee,Not Sweet,"Yes, Positive","Yes, Positive",No,Lucky
+11/23/2024 18:50:52,5,4,31,F,Never,No preference,Sweet,"Yes, Positive",No,No,Priya
+11/23/2024 19:03:40,2,4,25,M,Often (almost every day) every day,Hot Coffee,Not Sweet,No,No,No,Gabe
+11/23/2024 19:10:29,5,3,25,F,Often (almost every day) every day,Hot Coffee,Sweet,"Yes, Positive","Yes, Neutral",No,Shruti Nair - T
+11/23/2024 19:11:40,6,4,25,M,Sometimes (a few times a week),Cold Coffee,Sweet,No,No,No,Sumitro Saha
+11/28/2024 20:27:11,5,6,59,F,Often (almost every day) every day,Hot Coffee,Sweet,No,No,No,Sandra Dasaad
+11/28/2024 20:29:01,7,4,66,F,Often (almost every day) every day,Hot Coffee,Sweet,No,No,No,Gladys
+11/28/2024 20:30:46,6,3,63,F,Often (almost every day) every day,Hot Coffee,Sweet,No,No,No,Libby Vega
+11/28/2024 20:33:25,5,3,38,F,Often (almost every day) every day,Hot Coffee,Not Sweet,No,No,No,Jade Dasaad
+11/28/2024 20:34:59,6,2,56,M,Often (almost every day) every day,Hot Coffee,Not Sweet,No,No,No,Alex Vega 
+11/28/2024 20:36:54,4,1,32,M,Often (almost every day) every day,Cold Coffee,Not Sweet,No,No,No,Adam Dasaad

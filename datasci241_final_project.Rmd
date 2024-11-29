@@ -2,7 +2,9 @@
 title: "Untitled"
 author: "Simran Gill"
 date: "2024-11-27"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -38,6 +40,16 @@ treatment$age <- as.integer(treatment$age)
 
 d <- rbind(control, treatment)
 
+cat("Number of Rows before cleaning:",nrow(d))
+
+# re-labeling gender
+d <- d %>%
+  mutate(gender = case_when(
+    gender == "F" ~ "Female",
+    gender == "M" ~ "Male",
+    TRUE ~ "Unknown"
+  ))
+
 # removing rows where age is null
 d <- d %>%
   filter(!is.na(age))
@@ -57,6 +69,11 @@ d$how_often_drink_coffee <- factor(d$how_often_drink_coffee,
                                               "Often (almost every day)", 
                                               "Every day"))
 
+d$chameleon_awareness_flag <- ifelse(d$chameleon_awareness == "No", 0, 1)
+d$good_and_gather_awareness_flag <- ifelse(d$good_and_gather_awareness == "No", 0, 1)
+
+cat("\nNumber of Rows after cleaning:",nrow(d))
+
 str(d)
 ```
 
@@ -75,7 +92,17 @@ boxplot(d$age, control$age, treatment$age,
         col = c("#D8A7FF", "lightblue", "lightgreen"),
         border = "black")
 ```
-```{r gender by age group}
+```{r }
+cat("Number of Rows for Treatment Group:", sum(d$treatment == 1))
+cat("\nNumber of Rows for Control Group:", sum(d$treatment == 0))
+```
+
+```{r }
+unique(control$gender)
+unique(treatment$gender)
+```
+
+```{r treatment by age group}
 
 ggplot(d, aes(x = treatment, fill = age_group)) +
   geom_bar(position = "stack") +
@@ -84,7 +111,7 @@ ggplot(d, aes(x = treatment, fill = age_group)) +
   theme_minimal()
 ```
 
-```{r gender by age group}
+```{r brand awarenenss chameleon}
 
 ggplot(d, aes(x = treatment, fill = chameleon_awareness)) +
   geom_bar(position = "stack") +
@@ -92,7 +119,7 @@ ggplot(d, aes(x = treatment, fill = chameleon_awareness)) +
   scale_fill_manual(values = c("#70D6FF", "#FF70A6", "#FF9770", "#FFD670")) +
   theme_minimal()
 ```
-```{r gender by age group}
+```{r brand awareness good and gather}
 
 ggplot(d, aes(x = treatment, fill = good_and_gather_awareness)) +
   geom_bar(position = "stack") +
@@ -112,7 +139,7 @@ control_pie <- ggplot(control_gender_counts, aes(x = "", y = n, fill = gender)) 
   geom_bar(stat = "identity", width = 1) +  
   coord_polar(theta = "y") + 
   labs(title = "Gender Distribution for Control Group") +
-  scale_fill_manual(values = c("lightpink", "lightblue")) + 
+  scale_fill_manual(values = c("purple","lightpink", "lightblue")) + 
   theme_void()  
 
 ### Treatment Group Gender ###
@@ -124,7 +151,7 @@ treatment_pie <- ggplot(treatment_gender_counts, aes(x = "", y = n, fill = gende
   geom_bar(stat = "identity", width = 1) +  
   coord_polar(theta = "y") + 
   labs(title = "Gender Distribution for Treatment Group") +
-  scale_fill_manual(values = c("lightpink", "lightblue")) + 
+  scale_fill_manual(values = c("lightpink", "lightblue", "purple")) + 
   theme_void() 
 
 grid.arrange(control_pie, treatment_pie, ncol = 2)
@@ -193,14 +220,14 @@ We also wanted to test if adding Good&Gather brand awareness as a variable to mo
 stargazer(model_gg_covariates, model_gg_covariates_v2, 
           type = "text",   # Use "html" for HTML output or "latex" for LaTeX
           title = "Regression Results for Good and Gather Score", 
-          covariate.labels = c("Treatment", "Age Group", "Gender", "Chameleon Awareness", "Good and Gather Awareness"),
+          covariate.labels = c("Treatment", "log(Age)", "Gender", "Chameleon Awareness", "Good and Gather Awareness"),
           star.cutoffs = c(0.10, 0.05, 0.01, 0.001),   # Significance stars
           out = "regression_table.txt")  # Optional: Save output to a text file
 ```
 
 c('timestamp', 'good_and_gather_score', 'chameleon_score', 'age', 'gender','how_often_drink_coffee', 'hot_or_cold', 'sweet_or_not_sweet', 'good_and_gather_awareness','chameleon_awareness', 'medical_condition', 'name')
 ```{r Chameleon Covariates }
-model_c_covariates <- lm(chameleon_score ~ treatment + log(age) + gender + chameleon_awareness + good_and_gather_awareness ,  data = d)
+model_c_covariates <- lm(chameleon_score ~ treatment + log(age) + gender + chameleon_awareness_flag + good_and_gather_awareness_flag ,  data = d)
 
 ate_with_covariates <- coef(model_c_covariates)["treatment"]
 print(ate_with_covariates)
@@ -208,8 +235,8 @@ print(ate_with_covariates)
 summary(model_c_covariates)
 
 ```
-```{r Good&Gather ANOVA}
-model_c_covariates_v2 <- lm(chameleon_score ~ treatment + log(age) + gender + chameleon_awareness,  data = d)
+```{r Chameleon ANOVA}
+model_c_covariates_v2 <- lm(chameleon_score ~ treatment + log(age) + gender + chameleon_awareness_flag,  data = d)
 
 anova(model_c_covariates , model_c_covariates_v2)
 
@@ -218,7 +245,7 @@ anova(model_c_covariates , model_c_covariates_v2)
 stargazer(model_gg_covariates, model_gg_covariates_v2, 
           type = "text",   # Use "html" for HTML output or "latex" for LaTeX
           title = "Regression Results for Good and Gather Score", 
-          covariate.labels = c("Treatment", "Age Group", "Gender", "Chameleon Awareness", "Good and Gather Awareness"),
+          covariate.labels = c("Treatment", "log(Age)", "Gender", "Chameleon Awareness", "Good and Gather Awareness"),
           star.cutoffs = c(0.10, 0.05, 0.01, 0.001),   # Significance stars
           out = "regression_table.txt")  # Optional: Save output to a text file
 ```

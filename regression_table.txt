@@ -6,41 +6,41 @@ Regression Results for Good and Gather Score
                                                   good_and_gather_score           
                                                 (1)                   (2)         
 ----------------------------------------------------------------------------------
-Treatment                                     -0.568*               -0.513*       
-                                              (0.287)               (0.294)       
+Treatment                                    -0.669**              -0.631**       
+                                              (0.310)               (0.314)       
                                                                                   
-log(Age)                                     1.303***               1.130**       
-                                              (0.428)               (0.442)       
+log(Age)                                     1.454***               1.273**       
+                                              (0.485)               (0.498)       
                                                                                   
-Gender                                         0.385                 0.254        
-                                              (0.276)               (0.289)       
+Gender                                         0.442                 0.284        
+                                              (0.298)               (0.312)       
                                                                                   
-Chameleon Awareness                          -1.887**              -2.097**       
-                                              (0.945)               (0.960)       
+Chameleon Awareness                          -1.973**              -2.238**       
+                                              (0.954)               (0.969)       
                                                                                   
-Good and Gather Awareness                     0.932*                0.951*        
-                                              (0.475)               (0.493)       
+Good and Gather Awareness                     0.914*                0.980*        
+                                              (0.512)               (0.525)       
                                                                                   
-chameleon_awarenessYes, Positive              -0.617                -0.526        
-                                              (0.401)               (0.421)       
+chameleon_awarenessYes, Positive              -0.692                -0.563        
+                                              (0.422)               (0.440)       
                                                                                   
-good_and_gather_awarenessYes, Negative                              -0.856        
-                                                                    (1.350)       
+good_and_gather_awarenessYes, Negative                              -0.967        
+                                                                    (1.359)       
                                                                                   
-good_and_gather_awarenessYes, Neutral                               -0.543        
-                                                                    (0.350)       
+good_and_gather_awarenessYes, Neutral                               -0.606        
+                                                                    (0.366)       
                                                                                   
-good_and_gather_awarenessYes, Positive                              -0.147        
-                                                                    (0.391)       
+good_and_gather_awarenessYes, Positive                              -0.279        
+                                                                    (0.444)       
                                                                                   
-Constant                                      -0.524                 0.314        
-                                              (1.512)               (1.605)       
+Constant                                      -0.955                -0.024        
+                                              (1.683)               (1.779)       
                                                                                   
 ----------------------------------------------------------------------------------
-Observations                                    90                    90          
-R2                                             0.229                 0.254        
-Adjusted R2                                    0.174                 0.170        
-Residual Std. Error                       1.301 (df = 83)       1.304 (df = 80)   
-F Statistic                            4.116*** (df = 6; 83) 3.032*** (df = 9; 80)
+Observations                                    78                    78          
+R2                                             0.255                 0.287        
+Adjusted R2                                    0.192                 0.192        
+Residual Std. Error                       1.307 (df = 71)       1.307 (df = 68)   
+F Statistic                            4.057*** (df = 6; 71) 3.034*** (df = 9; 68)
 ==================================================================================
 Note:                                                  *p<0.1; **p<0.05; ***p<0.01

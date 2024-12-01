@@ -1,6 +1,6 @@
 ---
-title: "Untitled"
-author: "Simran Gill"
+title: "The Effects of Branded Coffee on Preceived Taste Satisfaction"
+author: "Amy Zhang, Chris John, Jenna Farac, Simran Gill"
 date: "2024-11-27"
 output:
   pdf_document: default
@@ -11,7 +11,6 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Loading data
 
 
 ```{r reading data}
@@ -22,6 +21,8 @@ library(ggplot2)
 library(dplyr) 
 library(car)
 
+set.seed(123)
+
 control <- read.csv("Coffee Survey Control (Responses) - Form Responses 1.csv") 
 treatment <- read.csv("Coffee Survey Group II (Responses) - Form Responses 1.csv")
 
@@ -31,6 +32,8 @@ colnames(control) <- c('timestamp', 'good_and_gather_score', 'chameleon_score', 
 colnames(treatment) <- c('timestamp', 'name','good_and_gather_score', 'chameleon_score', 'age', 'gender','how_often_drink_coffee', 'hot_or_cold', 'sweet_or_not_sweet', 'medical_condition','good_and_gather_awareness','chameleon_awareness')
 # reorder column names for treatment
 treatment <- treatment[, c('timestamp', 'good_and_gather_score', 'chameleon_score', 'age', 'gender','how_often_drink_coffee', 'hot_or_cold', 'sweet_or_not_sweet', 'good_and_gather_awareness','chameleon_awareness', 'medical_condition', 'name')]
+
+#--- Control ----
 
 control$treatment <- 0
 control$age <- as.integer(control$age)
@@ -43,6 +46,12 @@ control <- control %>%
     TRUE ~ "Unknown"
   ))
 
+# removing rows where age is null
+control<- control %>%
+  filter(!is.na(age))
+
+#--- Treatment ----
+
 treatment$treatment <- 1
 treatment$age <- as.integer(treatment$age)
 
@@ -54,14 +63,34 @@ treatment <- treatment %>%
     TRUE ~ "Unknown"
   ))
 
-d <- rbind(control, treatment)
-
-cat("Number of Rows before cleaning:",nrow(d))
-
-
 # removing rows where age is null
-d <- d %>%
+treatment<- treatment %>%
   filter(!is.na(age))
+
+```
+## Balancing Control and Treatment
+There are more participants in Control than in Treatment groups. To help create balance between the two groups, will perform random sampling to match the size of the treatment group.
+
+```{r }
+print("Before Random Sampling:")
+cat("Control size:", nrow(control))
+cat("\nTreatment size:", nrow(treatment))
+
+# selecting smaller group size
+n_control <- nrow(control)
+min_size <- min(n_control, nrow(treatment))
+
+# random sampling the control group 
+control <- control[sample(1:n_control, min_size), ]
+
+# combined data 
+d <- rbind(control, treatment)
+table(d$treatment)
+
+```
+## Organizing the rest of the data from dataset "d"
+
+```{r }
 
 # creating age groups
 d$age_group <- cut(d$age,
@@ -78,14 +107,15 @@ d$how_often_drink_coffee <- factor(d$how_often_drink_coffee,
                                               "Often (almost every day)", 
                                               "Every day"))
 
+# yes/no flag for if the participant is aware of the coffee brand at all
 d$chameleon_awareness_flag <- ifelse(d$chameleon_awareness == "No", 0, 1)
 d$good_and_gather_awareness_flag <- ifelse(d$good_and_gather_awareness == "No", 0, 1)
 
-cat("\nNumber of Rows after cleaning:",nrow(d))
+cat("\nNumber of Rows after cleaning:",nrow(d),"\n")
 
 str(d)
 ```
-
+ 
 
 ## Exploratory Data Analysis
 
@@ -229,7 +259,6 @@ stargazer(model_gg_covariates, model_gg_covariates_v2,
           out = "regression_table.txt")  # Optional: Save output to a text file
 ```
 
-c('timestamp', 'good_and_gather_score', 'chameleon_score', 'age', 'gender','how_often_drink_coffee', 'hot_or_cold', 'sweet_or_not_sweet', 'good_and_gather_awareness','chameleon_awareness', 'medical_condition', 'name')
 ```{r Chameleon Covariates }
 model_c_covariates <- lm(chameleon_score ~ treatment + log(age) + gender + chameleon_awareness_flag + good_and_gather_awareness_flag ,  data = d)
 

@@ -18,6 +18,7 @@ library(data.table)
 library(gridExtra)
 library(stargazer)
 library(ggplot2)
+library(lmtest)
 library(dplyr) 
 library(car)
 
@@ -162,16 +163,20 @@ ggplot(d, aes(x = treatment, fill = good_and_gather_awareness)) +
   theme_minimal()
 ```
 
+
 ```{r Gender}
 
 ### Control Group Gender ###
 control_gender_counts <- control %>%
   group_by(gender) %>%
-  tally()
+  tally() %>%
+  mutate(percentage = n / sum(n) * 100)
 
 control_pie <- ggplot(control_gender_counts, aes(x = "", y = n, fill = gender)) +
   geom_bar(stat = "identity", width = 1) +  
   coord_polar(theta = "y") + 
+  geom_text(aes(label = paste0(round(percentage, 1), "%")), 
+            position = position_stack(vjust = 0.5)) +
   labs(title = "Gender Distribution for Control Group") +
   scale_fill_manual(values = c("lightpink", "lightblue", "purple")) + 
   theme_void()  
@@ -179,14 +184,17 @@ control_pie <- ggplot(control_gender_counts, aes(x = "", y = n, fill = gender)) 
 ### Treatment Group Gender ###
 treatment_gender_counts <- treatment %>%
   group_by(gender) %>%
-  tally()
+  tally() %>%
+  mutate(percentage = n / sum(n) * 100)
 
 treatment_pie <- ggplot(treatment_gender_counts, aes(x = "", y = n, fill = gender)) +
   geom_bar(stat = "identity", width = 1) +  
   coord_polar(theta = "y") + 
+  geom_text(aes(label = paste0(round(percentage, 1), "%")), 
+            position = position_stack(vjust = 0.5)) +
   labs(title = "Gender Distribution for Treatment Group") +
   scale_fill_manual(values = c("lightpink", "lightblue", "purple")) + 
-  theme_void() 
+  theme_void()
 
 grid.arrange(control_pie, treatment_pie, ncol = 2)
 ```
@@ -225,8 +233,10 @@ summary(model_c)
 ```
 # ATE Adjusted for Covariates 
 
+c('timestamp', 'good_and_gather_score', 'chameleon_score', 'age', 'gender','how_often_drink_coffee', 'hot_or_cold', 'sweet_or_not_sweet', 'good_and_gather_awareness','chameleon_awareness', 'medical_condition', 'name')
+
 ```{r Good & Gather Covariates }
-model_gg_covariates <- lm(good_and_gather_score ~ treatment + log(age) + gender + chameleon_awareness ,  data = d)
+model_gg_covariates <- lm(good_and_gather_score ~ treatment + log(age) + gender + chameleon_awareness,  data = d)
 
 ate_with_covariates <- coef(model_gg_covariates)["treatment"]
 print(ate_with_covariates)
@@ -234,6 +244,12 @@ print(ate_with_covariates)
 summary(model_gg_covariates)
 
 ```
+
+
+```{r }
+vif(model_gg_covariates)
+```
+
 ```{r Good&Gather ANOVA}
 model_gg_covariates_v2 <- lm(good_and_gather_score ~ treatment + gender + log(age) + chameleon_awareness + good_and_gather_awareness,  data = d)
 
@@ -241,9 +257,9 @@ anova(model_gg_covariates , model_gg_covariates_v2)
 
 ```
 
-**Interpretation** We tested multiple covariates to see if we can improve the regression model for Good&Gather Score. The main covariates we see has a positive impact is how a participate views the Chameleon brand and age group. 
 
-When it comes to age, participants in the age group 30 - 39 and 40 - 49 are likely to rate Good & Gather higher after the brand is revealed. Because these two variables have some significants, age group does play a part in how a participant rates the coffee after treatment is provided. 
+
+**Interpretation** We tested multiple covariates to see if we can improve the regression model for Good&Gather Score. The main covariates we see has a positive impact is how a participate views the Chameleon brand and age group. 
 
 When it comes to the Chameleon, even though the participants has a negative view of Chameleon coffee as a brand, they are still likely to score Good & Gather -1.8285 after treatment is provided. The p-value for Chameleon awareness is 0.0561, which means this variable is marginally significant. 
 
@@ -251,13 +267,58 @@ We also wanted to test if adding Good&Gather brand awareness as a variable to mo
 
 
 ```{r }
-stargazer(model_gg_covariates, model_gg_covariates_v2, 
-          type = "text",   # Use "html" for HTML output or "latex" for LaTeX
+stargazer(model_gg, model_gg_covariates, 
+          type = "latex",   # Use "html" for HTML output or "latex" for LaTeX
           title = "Regression Results for Good and Gather Score", 
           covariate.labels = c("Treatment", "log(Age)", "Gender", "Chameleon Awareness", "Good and Gather Awareness"),
           star.cutoffs = c(0.10, 0.05, 0.01, 0.001),   # Significance stars
           out = "regression_table.txt")  # Optional: Save output to a text file
 ```
+
+\begin{table}[!htbp] \centering 
+  \caption{Regression Results for Good and Gather Score} 
+  \label{} 
+\begin{tabular}{@{\extracolsep{5pt}}lcc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{2}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-3} 
+\\[-1.8ex] & \multicolumn{2}{c}{good\_and\_gather\_score} \\ 
+\\[-1.8ex] & (1) & (2)\\ 
+\hline \\[-1.8ex] 
+ Treatment & $-$0.436 & $-$0.669$^{**}$ \\ 
+  & (0.328) & (0.310) \\ 
+  & & \\ 
+ log(Age) &  & 1.454$^{***}$ \\ 
+  &  & (0.485) \\ 
+  & & \\ 
+ Gender &  & 0.442 \\ 
+  &  & (0.298) \\ 
+  & & \\ 
+ Chameleon Awareness &  & $-$1.973$^{**}$ \\ 
+  &  & (0.954) \\ 
+  & & \\ 
+ Good and Gather Awareness &  & 0.914$^{*}$ \\ 
+  &  & (0.512) \\ 
+  & & \\ 
+ chameleon\_awarenessYes, Positive &  & $-$0.692 \\ 
+  &  & (0.422) \\ 
+  & & \\ 
+ Constant & 4.051$^{****}$ & $-$0.955 \\ 
+  & (0.232) & (1.683) \\ 
+  & & \\ 
+\hline \\[-1.8ex] 
+Observations & 78 & 78 \\ 
+R$^{2}$ & 0.023 & 0.255 \\ 
+Adjusted R$^{2}$ & 0.010 & 0.192 \\ 
+Residual Std. Error & 1.447 (df = 76) & 1.307 (df = 71) \\ 
+F Statistic & 1.770 (df = 1; 76) & 4.057$^{***}$ (df = 6; 71) \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{2}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+\end{tabular} 
+\end{table} 
+
 
 ```{r Chameleon Covariates }
 model_c_covariates <- lm(chameleon_score ~ treatment + log(age) + gender + chameleon_awareness_flag + good_and_gather_awareness_flag ,  data = d)
@@ -275,10 +336,54 @@ anova(model_c_covariates , model_c_covariates_v2)
 
 ```
 ```{r }
-stargazer(model_gg_covariates, model_gg_covariates_v2, 
-          type = "text",   # Use "html" for HTML output or "latex" for LaTeX
-          title = "Regression Results for Good and Gather Score", 
+stargazer(model_c, model_c_covariates, 
+          type = "latex",   # Use "html" for HTML output or "latex" for LaTeX
+          title = "Regression Results for Chameleon Score", 
           covariate.labels = c("Treatment", "log(Age)", "Gender", "Chameleon Awareness", "Good and Gather Awareness"),
           star.cutoffs = c(0.10, 0.05, 0.01, 0.001),   # Significance stars
           out = "regression_table.txt")  # Optional: Save output to a text file
 ```
+
+
+
+
+\begin{table}[!htbp] \centering 
+  \caption{Regression Results for Chameleon Score} 
+  \label{} 
+\begin{tabular}{@{\extracolsep{5pt}}lcc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{2}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-3} 
+\\[-1.8ex] & \multicolumn{2}{c}{chameleon\_score} \\ 
+\\[-1.8ex] & (1) & (2)\\ 
+\hline \\[-1.8ex] 
+ Treatment & 0.410 & 0.054 \\ 
+  & (0.347) & (0.318) \\ 
+  & & \\ 
+ log(Age) &  & 1.401$^{***}$ \\ 
+  &  & (0.512) \\ 
+  & & \\ 
+ Gender &  & 0.230 \\ 
+  &  & (0.322) \\ 
+  & & \\ 
+ Chameleon Awareness &  & 1.403$^{****}$ \\ 
+  &  & (0.360) \\ 
+  & & \\ 
+ Good and Gather Awareness &  & 0.442 \\ 
+  &  & (0.336) \\ 
+  & & \\ 
+ Constant & 3.641$^{****}$ & $-$1.715 \\ 
+  & (0.246) & (1.818) \\ 
+  & & \\ 
+\hline \\[-1.8ex] 
+Observations & 78 & 78 \\ 
+R$^{2}$ & 0.018 & 0.262 \\ 
+Adjusted R$^{2}$ & 0.005 & 0.211 \\ 
+Residual Std. Error & 1.534 (df = 76) & 1.366 (df = 72) \\ 
+F Statistic & 1.394 (df = 1; 76) & 5.120$^{****}$ (df = 5; 72) \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{2}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+\end{tabular} 
+\end{table}

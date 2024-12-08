@@ -158,7 +158,7 @@ ggplot(d, aes(x = treatment, fill = chameleon_awareness)) +
 
 ggplot(d, aes(x = treatment, fill = good_and_gather_awareness)) +
   geom_bar(position = "stack") +
-  labs(title = "Good&Gather Awareness by Control and Treatment", x = "good_and_gather_awareness", y = "Count") +
+  labs(title = "Good &Gather Awareness by Control and Treatment", x = "good_and_gather_awareness", y = "Count") +
   scale_fill_manual(values = c("#70D6FF", "#FF70A6", "#FF9770", "#FFD670")) +
   theme_minimal()
 ```
@@ -270,9 +270,12 @@ We also wanted to test if adding Good&Gather brand awareness as a variable to mo
 stargazer(model_gg, model_gg_covariates, 
           type = "latex",   # Use "html" for HTML output or "latex" for LaTeX
           title = "Regression Results for Good and Gather Score", 
-          covariate.labels = c("Treatment", "log(Age)", "Gender", "Chameleon Awareness", "Good and Gather Awareness"),
+          covariate.labels = c("Treatment", "log(Age)", "Gender", 
+                               "Chameleon Awareness (Negative)", 
+                               "Chameleon Awareness (Neutral)", 
+                               "Chameleon Awareness (Positive)"),
           star.cutoffs = c(0.10, 0.05, 0.01, 0.001),   # Significance stars
-          out = "regression_table.txt")  # Optional: Save output to a text file
+          report = "vc*p")  # Optional: Save output to a text file
 ```
 
 \begin{table}[!htbp] \centering 
@@ -287,25 +290,25 @@ stargazer(model_gg, model_gg_covariates,
 \\[-1.8ex] & (1) & (2)\\ 
 \hline \\[-1.8ex] 
  Treatment & $-$0.436 & $-$0.669$^{**}$ \\ 
-  & (0.328) & (0.310) \\ 
+  & p = 0.188 & p = 0.035 \\ 
   & & \\ 
  log(Age) &  & 1.454$^{***}$ \\ 
-  &  & (0.485) \\ 
+  &  & p = 0.004 \\ 
   & & \\ 
  Gender &  & 0.442 \\ 
-  &  & (0.298) \\ 
+  &  & p = 0.144 \\ 
   & & \\ 
- Chameleon Awareness &  & $-$1.973$^{**}$ \\ 
-  &  & (0.954) \\ 
+ Chameleon Awareness (Negative) &  & $-$1.973$^{**}$ \\ 
+  &  & p = 0.043 \\ 
   & & \\ 
- Good and Gather Awareness &  & 0.914$^{*}$ \\ 
-  &  & (0.512) \\ 
+ Chameleon Awareness (Neutral) &  & 0.914$^{*}$ \\ 
+  &  & p = 0.079 \\ 
   & & \\ 
- chameleon\_awarenessYes, Positive &  & $-$0.692 \\ 
-  &  & (0.422) \\ 
+ Chameleon Awareness (Positive) &  & $-$0.692 \\ 
+  &  & p = 0.106 \\ 
   & & \\ 
  Constant & 4.051$^{****}$ & $-$0.955 \\ 
-  & (0.232) & (1.683) \\ 
+  & p = 0.000 & p = 0.573 \\ 
   & & \\ 
 \hline \\[-1.8ex] 
 Observations & 78 & 78 \\ 
@@ -321,7 +324,7 @@ F Statistic & 1.770 (df = 1; 76) & 4.057$^{***}$ (df = 6; 71) \\
 
 
 ```{r Chameleon Covariates }
-model_c_covariates <- lm(chameleon_score ~ treatment + log(age) + gender + chameleon_awareness_flag + good_and_gather_awareness_flag ,  data = d)
+model_c_covariates <- lm(chameleon_score ~ treatment + log(age) + gender + chameleon_awareness ,  data = d)
 
 ate_with_covariates <- coef(model_c_covariates)["treatment"]
 print(ate_with_covariates)
@@ -330,21 +333,22 @@ summary(model_c_covariates)
 
 ```
 ```{r Chameleon ANOVA}
-model_c_covariates_v2 <- lm(chameleon_score ~ treatment + log(age) + gender + chameleon_awareness_flag,  data = d)
+model_c_covariates_v2 <- lm(chameleon_score ~ treatment + log(age) + gender + chameleon_awareness + good_and_gather_awareness,  data = d)
 
 anova(model_c_covariates , model_c_covariates_v2)
 
 ```
 ```{r }
-stargazer(model_c, model_c_covariates, 
+stargazer(model_c, model_c_covariates,
           type = "latex",   # Use "html" for HTML output or "latex" for LaTeX
           title = "Regression Results for Chameleon Score", 
-          covariate.labels = c("Treatment", "log(Age)", "Gender", "Chameleon Awareness", "Good and Gather Awareness"),
-          star.cutoffs = c(0.10, 0.05, 0.01, 0.001),   # Significance stars
-          out = "regression_table.txt")  # Optional: Save output to a text file
+          covariate.labels = c("Treatment", "log(Age)", "Gender", 
+                               "Chameleon Awareness (Negative)", 
+                               "Chameleon Awareness (Neutral)", 
+                               "Chameleon Awareness (Positive)"),  # Manually add all factor levels
+          star.cutoffs = c(0.10, 0.05, 0.01, 0.001),
+          report = "vc*p")  # Optional: Save output to a text file
 ```
-
-
 
 
 \begin{table}[!htbp] \centering 
@@ -358,30 +362,33 @@ stargazer(model_c, model_c_covariates,
 \\[-1.8ex] & \multicolumn{2}{c}{chameleon\_score} \\ 
 \\[-1.8ex] & (1) & (2)\\ 
 \hline \\[-1.8ex] 
- Treatment & 0.410 & 0.054 \\ 
-  & (0.347) & (0.318) \\ 
+ Treatment & 0.410 & 0.094 \\ 
+  & p = 0.242 & p = 0.777 \\ 
   & & \\ 
- log(Age) &  & 1.401$^{***}$ \\ 
-  &  & (0.512) \\ 
+ log(Age) &  & 1.242$^{**}$ \\ 
+  &  & p = 0.019 \\ 
   & & \\ 
- Gender &  & 0.230 \\ 
-  &  & (0.322) \\ 
+ Gender &  & 0.134 \\ 
+  &  & p = 0.675 \\ 
   & & \\ 
- Chameleon Awareness &  & 1.403$^{****}$ \\ 
-  &  & (0.360) \\ 
+ Chameleon Awareness (Negative) &  & 1.347 \\ 
+  &  & p = 0.189 \\ 
   & & \\ 
- Good and Gather Awareness &  & 0.442 \\ 
-  &  & (0.336) \\ 
+ Chameleon Awareness (Neutral) &  & 1.334$^{**}$ \\ 
+  &  & p = 0.017 \\ 
   & & \\ 
- Constant & 3.641$^{****}$ & $-$1.715 \\ 
-  & (0.246) & (1.818) \\ 
+ Chameleon Awareness (Positive) &  & 1.636$^{****}$ \\ 
+  &  & p = 0.001 \\ 
+  & & \\ 
+ Constant & 3.641$^{****}$ & $-$0.935 \\ 
+  & p = 0.000 & p = 0.603 \\ 
   & & \\ 
 \hline \\[-1.8ex] 
 Observations & 78 & 78 \\ 
-R$^{2}$ & 0.018 & 0.262 \\ 
-Adjusted R$^{2}$ & 0.005 & 0.211 \\ 
-Residual Std. Error & 1.534 (df = 76) & 1.366 (df = 72) \\ 
-F Statistic & 1.394 (df = 1; 76) & 5.120$^{****}$ (df = 5; 72) \\ 
+R$^{2}$ & 0.018 & 0.247 \\ 
+Adjusted R$^{2}$ & 0.005 & 0.184 \\ 
+Residual Std. Error & 1.534 (df = 76) & 1.390 (df = 71) \\ 
+F Statistic & 1.394 (df = 1; 76) & 3.885$^{***}$ (df = 6; 71) \\ 
 \hline 
 \hline \\[-1.8ex] 
 \textit{Note:}  & \multicolumn{2}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 

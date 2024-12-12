@@ -78,15 +78,15 @@ cat("Control size:", nrow(control))
 cat("\nTreatment size:", nrow(treatment))
 
 # selecting smaller group size
-n_control <- nrow(control)
-min_size <- min(n_control, nrow(treatment))
+#n_control <- nrow(control)
+#min_size <- min(n_control, nrow(treatment))
 
-# random sampling the control group 
-control <- control[sample(1:n_control, min_size), ]
+#random sampling the control group 
+#control <- control[sample(1:n_control, min_size), ]
 
 # combined data 
 d <- rbind(control, treatment)
-table(d$treatment)
+table(d$treatment) 
 
 ```
 ## Organizing the rest of the data from dataset "d"
@@ -139,27 +139,56 @@ cat("\nNumber of Rows for Control Group:", sum(d$treatment == 0))
 
 ```{r treatment by age group}
 
-ggplot(d, aes(x = treatment, fill = age_group)) +
+ggplot(d, aes(x = as.factor(treatment), fill = age_group)) +
   geom_bar(position = "stack") +
-  labs(title = "Age Group by Control and Treatment", x = "Age Group", y = "Count") +
-  scale_fill_manual(values = c("#065143", "#129490", "#70B77E", "#E0A890", "#CE1483"))  +
+  labs(
+    title = "Age Group by Control and Treatment",
+    x = "Treatment Group",
+    y = "Count"
+  ) +
+  scale_x_discrete(
+    labels = c("0" = "Control", "1" = "Treatment")
+  ) +
+  scale_fill_manual(
+    values = c("#065143", "#129490", "#70B77E", "#E0A890", "#CE1483"),
+    name = "Age Group"
+  ) +
   theme_minimal()
 ```
 
 ```{r brand awarenenss chameleon}
-
-ggplot(d, aes(x = treatment, fill = chameleon_awareness)) +
+ggplot(d, aes(x = as.factor(treatment), fill = chameleon_awareness)) +
   geom_bar(position = "stack") +
-  labs(title = "Chameleon Awareness by Control and Treatment", x = "chameleon_awareness", y = "Count") +
-  scale_fill_manual(values = c("#70D6FF", "#FF70A6", "#FF9770", "#FFD670")) +
+  labs(
+    title = "Chameleon Awareness by Control and Treatment",
+    x = "Treatment Group",
+    y = "Count"
+  ) +
+  scale_x_discrete(
+    labels = c("0" = "Control", "1" = "Treatment")
+  ) +
+  scale_fill_manual(
+    values = c("#70D6FF", "#FF70A6", "#FF9770", "#FFD670"),
+    name = "Chameleon Awareness"
+  ) +
   theme_minimal()
 ```
 ```{r brand awareness good and gather}
 
-ggplot(d, aes(x = treatment, fill = good_and_gather_awareness)) +
+ggplot(d, aes(x = as.factor(treatment), fill = good_and_gather_awareness)) +
   geom_bar(position = "stack") +
-  labs(title = "Good &Gather Awareness by Control and Treatment", x = "good_and_gather_awareness", y = "Count") +
-  scale_fill_manual(values = c("#70D6FF", "#FF70A6", "#FF9770", "#FFD670")) +
+  labs(
+    title = "Good & Gather Awareness by Control and Treatment",
+    x = "Treatment Group",
+    y = "Count"
+  ) +
+  scale_x_discrete(
+    labels = c("0" = "Control", "1" = "Treatment")
+  ) +
+  scale_fill_manual(
+    values = c("#70D6FF", "#FF70A6", "#FF9770", "#FFD670"),
+    name = "Good & Gather Awareness"
+  ) +
   theme_minimal()
 ```
 
@@ -198,6 +227,52 @@ treatment_pie <- ggplot(treatment_gender_counts, aes(x = "", y = n, fill = gende
 
 grid.arrange(control_pie, treatment_pie, ncol = 2)
 ```
+```{r }
+c <- d[d$treatment == 0, ]
+t <- d[d$treatment == 1, ]
+
+# control good and gather 
+hist(
+  c$good_and_gather_score,
+  col = '#FF9770',
+  main = "Control - Distribution of Good & Gather Scores",
+  ylab = "Frequency", 
+  xlab = "Score", 
+  las = 1 )
+
+# treatment good and gather 
+hist(
+  t$good_and_gather_score,
+  col = '#70D6FF',
+  main = "Treatment - Distribution of Good & Gather Scores",
+  ylab = "Frequency", 
+  xlab = "Score", 
+  las = 1 )
+
+# control chameleon 
+hist(
+  c$chameleon_score,
+  col = '#FF9770',
+  main = "Control - Distribution of Chameleon Scores",
+  ylab = "Frequency", 
+  xlab = "Score", 
+  las = 1 )
+
+# treatment chameleon 
+hist(
+  t$chameleon_score,
+  col = '#70D6FF',
+  main = "Treatment - Distribution of Chameleon Scores",
+  ylab = "Frequency", 
+  xlab = "Score", 
+  las = 1 )
+
+
+
+
+
+```
+
 
 ##  Simple Average Treatment Effect 
 
@@ -222,6 +297,42 @@ print(ate_regression)
 summary(model_gg)
 
 ```
+```{r }
+stargazer(model_gg, 
+          type = "latex",   # Use "html" for HTML output or "latex" for LaTeX
+          title = "Baseline Model for Good and Gather Score", 
+          covariate.labels = c("Treatment"),
+          star.cutoffs = c(0.10, 0.05, 0.01, 0.001),   # Significance stars
+          report = "vc*p")  # Optional: Save output to a text file
+```
+\begin{table}[!htbp] \centering 
+  \caption{Baseline Model for Good and Gather Score} 
+  \label{} 
+\begin{tabular}{@{\extracolsep{5pt}}lc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{1}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-2} 
+\\[-1.8ex] & good\_and\_gather\_score \\ 
+\hline \\[-1.8ex] 
+ Treatment & $-$0.443 \\ 
+  & p = 0.147 \\ 
+  & \\ 
+ Constant & 4.059$^{****}$ \\ 
+  & p = 0.000 \\ 
+  & \\ 
+\hline \\[-1.8ex] 
+Observations & 90 \\ 
+R$^{2}$ & 0.024 \\ 
+Adjusted R$^{2}$ & 0.013 \\ 
+Residual Std. Error & 1.422 (df = 88) \\ 
+F Statistic & 2.148 (df = 1; 88) \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{1}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+\end{tabular} 
+\end{table} 
+
 ```{r Chameleon - Average Treatment Effect }
 # Basic Linear regression to estimate ATE
 model_c <- lm(chameleon_score ~ treatment, data=d)
@@ -231,6 +342,7 @@ print(ate_regression)
 summary(model_c)
 
 ```
+
 # ATE Adjusted for Covariates 
 
 c('timestamp', 'good_and_gather_score', 'chameleon_score', 'age', 'gender','how_often_drink_coffee', 'hot_or_cold', 'sweet_or_not_sweet', 'good_and_gather_awareness','chameleon_awareness', 'medical_condition', 'name')
@@ -289,33 +401,33 @@ stargazer(model_gg, model_gg_covariates,
 \\[-1.8ex] & \multicolumn{2}{c}{good\_and\_gather\_score} \\ 
 \\[-1.8ex] & (1) & (2)\\ 
 \hline \\[-1.8ex] 
- Treatment & $-$0.436 & $-$0.669$^{**}$ \\ 
-  & p = 0.188 & p = 0.035 \\ 
+ Treatment & $-$0.443 & $-$0.568$^{*}$ \\ 
+  & p = 0.147 & p = 0.051 \\ 
   & & \\ 
- log(Age) &  & 1.454$^{***}$ \\ 
+ log(Age) &  & 1.303$^{***}$ \\ 
   &  & p = 0.004 \\ 
   & & \\ 
- Gender &  & 0.442 \\ 
-  &  & p = 0.144 \\ 
+ Gender &  & 0.385 \\ 
+  &  & p = 0.168 \\ 
   & & \\ 
- Chameleon Awareness (Negative) &  & $-$1.973$^{**}$ \\ 
-  &  & p = 0.043 \\ 
+ Chameleon Awareness (Negative) &  & $-$1.887$^{**}$ \\ 
+  &  & p = 0.050 \\ 
   & & \\ 
- Chameleon Awareness (Neutral) &  & 0.914$^{*}$ \\ 
-  &  & p = 0.079 \\ 
+ Chameleon Awareness (Neutral) &  & 0.932$^{*}$ \\ 
+  &  & p = 0.053 \\ 
   & & \\ 
- Chameleon Awareness (Positive) &  & $-$0.692 \\ 
-  &  & p = 0.106 \\ 
+ Chameleon Awareness (Positive) &  & $-$0.617 \\ 
+  &  & p = 0.128 \\ 
   & & \\ 
- Constant & 4.051$^{****}$ & $-$0.955 \\ 
-  & p = 0.000 & p = 0.573 \\ 
+ Constant & 4.059$^{****}$ & $-$0.524 \\ 
+  & p = 0.000 & p = 0.731 \\ 
   & & \\ 
 \hline \\[-1.8ex] 
-Observations & 78 & 78 \\ 
-R$^{2}$ & 0.023 & 0.255 \\ 
-Adjusted R$^{2}$ & 0.010 & 0.192 \\ 
-Residual Std. Error & 1.447 (df = 76) & 1.307 (df = 71) \\ 
-F Statistic & 1.770 (df = 1; 76) & 4.057$^{***}$ (df = 6; 71) \\ 
+Observations & 90 & 90 \\ 
+R$^{2}$ & 0.024 & 0.229 \\ 
+Adjusted R$^{2}$ & 0.013 & 0.174 \\ 
+Residual Std. Error & 1.422 (df = 88) & 1.301 (df = 83) \\ 
+F Statistic & 2.148 (df = 1; 88) & 4.116$^{***}$ (df = 6; 83) \\ 
 \hline 
 \hline \\[-1.8ex] 
 \textit{Note:}  & \multicolumn{2}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
@@ -332,6 +444,45 @@ print(ate_with_covariates)
 summary(model_c_covariates)
 
 ```
+
+```{r }
+stargazer(model_c, 
+          type = "latex",   # Use "html" for HTML output or "latex" for LaTeX
+          title = "Baseline Model for Chameleon Score", 
+          covariate.labels = c("Treatment"),
+          star.cutoffs = c(0.10, 0.05, 0.01, 0.001),   # Significance stars
+          report = "vc*p")  # Optional: Save output to a text file
+```
+
+\begin{table}[!htbp] \centering 
+  \caption{Baseline Model for Chameleon Score} 
+  \label{} 
+\begin{tabular}{@{\extracolsep{5pt}}lc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{1}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-2} 
+\\[-1.8ex] & chameleon\_score \\ 
+\hline \\[-1.8ex] 
+ Treatment & 0.287 \\ 
+  & p = 0.387 \\ 
+  & \\ 
+ Constant & 3.765$^{****}$ \\ 
+  & p = 0.000 \\ 
+  & \\ 
+\hline \\[-1.8ex] 
+Observations & 90 \\ 
+R$^{2}$ & 0.009 \\ 
+Adjusted R$^{2}$ & $-$0.003 \\ 
+Residual Std. Error & 1.549 (df = 88) \\ 
+F Statistic & 0.757 (df = 1; 88) \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{1}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+\end{tabular} 
+\end{table} 
+
+
 ```{r Chameleon ANOVA}
 model_c_covariates_v2 <- lm(chameleon_score ~ treatment + log(age) + gender + chameleon_awareness + good_and_gather_awareness,  data = d)
 
@@ -362,35 +513,149 @@ stargazer(model_c, model_c_covariates,
 \\[-1.8ex] & \multicolumn{2}{c}{chameleon\_score} \\ 
 \\[-1.8ex] & (1) & (2)\\ 
 \hline \\[-1.8ex] 
- Treatment & 0.410 & 0.094 \\ 
-  & p = 0.242 & p = 0.777 \\ 
+ Treatment & 0.287 & 0.018 \\ 
+  & p = 0.387 & p = 0.953 \\ 
   & & \\ 
- log(Age) &  & 1.242$^{**}$ \\ 
-  &  & p = 0.019 \\ 
+ log(Age) &  & 1.196$^{**}$ \\ 
+  &  & p = 0.012 \\ 
   & & \\ 
- Gender &  & 0.134 \\ 
-  &  & p = 0.675 \\ 
+ Gender &  & 0.276 \\ 
+  &  & p = 0.360 \\ 
   & & \\ 
- Chameleon Awareness (Negative) &  & 1.347 \\ 
-  &  & p = 0.189 \\ 
+ Chameleon Awareness (Negative) &  & 1.250 \\ 
+  &  & p = 0.226 \\ 
   & & \\ 
- Chameleon Awareness (Neutral) &  & 1.334$^{**}$ \\ 
-  &  & p = 0.017 \\ 
+ Chameleon Awareness (Neutral) &  & 1.192$^{**}$ \\ 
+  &  & p = 0.023 \\ 
   & & \\ 
- Chameleon Awareness (Positive) &  & 1.636$^{****}$ \\ 
-  &  & p = 0.001 \\ 
+ Chameleon Awareness (Positive) &  & 1.675$^{****}$ \\ 
+  &  & p = 0.0003 \\ 
   & & \\ 
- Constant & 3.641$^{****}$ & $-$0.935 \\ 
-  & p = 0.000 & p = 0.603 \\ 
+ Constant & 3.765$^{****}$ & $-$0.760 \\ 
+  & p = 0.000 & p = 0.644 \\ 
   & & \\ 
 \hline \\[-1.8ex] 
-Observations & 78 & 78 \\ 
-R$^{2}$ & 0.018 & 0.247 \\ 
-Adjusted R$^{2}$ & 0.005 & 0.184 \\ 
-Residual Std. Error & 1.534 (df = 76) & 1.390 (df = 71) \\ 
-F Statistic & 1.394 (df = 1; 76) & 3.885$^{***}$ (df = 6; 71) \\ 
+Observations & 90 & 90 \\ 
+R$^{2}$ & 0.009 & 0.226 \\ 
+Adjusted R$^{2}$ & $-$0.003 & 0.170 \\ 
+Residual Std. Error & 1.549 (df = 88) & 1.409 (df = 83) \\ 
+F Statistic & 0.757 (df = 1; 88) & 4.043$^{***}$ (df = 6; 83) \\ 
 \hline 
 \hline \\[-1.8ex] 
 \textit{Note:}  & \multicolumn{2}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
 \end{tabular} 
-\end{table}
+\end{table} 
+
+```{r }
+library(tidyr)
+library(dplyr)
+
+reshaped_data <- d %>%
+  pivot_longer(
+    cols = c(good_and_gather_score, chameleon_score), # Columns to pivot
+    names_to = "brand",                              # New column for brand
+    values_to = "score"                              # New column for scores
+  ) %>%
+  mutate(brand = case_when(
+    brand == "good_and_gather_score" ~ "Good and Gather",
+    brand == "chameleon_score" ~ "Chameleon"
+  ))
+
+# View the reshaped data
+head(reshaped_data)
+```
+```{r }
+
+ate  <- mean(reshaped_data$score[d$treatment == 1], na.rm = TRUE) -
+                       mean(reshaped_data$score[d$treatment == 0], na.rm = TRUE)
+print(ate)
+
+```
+
+```{r }
+
+ate <- mean(reshaped_data$score[reshaped_data$treatment == 1], na.rm = TRUE) -
+       mean(reshaped_data$score[reshaped_data$treatment == 0], na.rm = TRUE)
+print(ate)
+
+```
+```{r }
+model1<- lm(score ~ treatment,  data = reshaped_data)
+model2 <- lm(score ~ treatment + log(age) + gender + chameleon_awareness + brand,  data = reshaped_data)
+```
+
+
+```{r }
+
+stargazer(model1, model2,
+          type = "latex",   # Use "html" for HTML output or "latex" for LaTeX
+          title = "Regression Results", 
+          covariate.labels = c("Treatment", "log(Age)", "Gender", 
+                               "Chameleon Awareness (Negative)", 
+                               "Chameleon Awareness (Neutral)", 
+                               "Chameleon Awareness (Positive)",
+                               "brand Good and Gather"),  # Manually add all factor levels
+          star.cutoffs = c(0.10, 0.05, 0.01, 0.001),
+          report = "vc*p")  # Optional: Save output to a text file
+
+```
+\begin{table}[!htbp] \centering 
+  \caption{Regression Results} 
+  \label{} 
+\begin{tabular}{@{\extracolsep{5pt}}lcc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{2}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-3} 
+\\[-1.8ex] & \multicolumn{2}{c}{score} \\ 
+\\[-1.8ex] & (1) & (2)\\ 
+\hline \\[-1.8ex] 
+ Treatment & $-$0.078 & $-$0.275 \\ 
+  & p = 0.727 & p = 0.217 \\ 
+  & & \\ 
+ log(Age) &  & 1.250$^{****}$ \\ 
+  &  & p = 0.0003 \\ 
+  & & \\ 
+ Gender &  & 0.331 \\ 
+  &  & p = 0.124 \\ 
+  & & \\ 
+ Chameleon Awareness (Negative) &  & $-$0.319 \\ 
+  &  & p = 0.663 \\ 
+  & & \\ 
+ Chameleon Awareness (Neutral) &  & 1.062$^{***}$ \\ 
+  &  & p = 0.005 \\ 
+  & & \\ 
+ Chameleon Awareness (Positive) &  & 0.529$^{*}$ \\ 
+  &  & p = 0.090 \\ 
+  & & \\ 
+ brand Good and Gather &  & $-$0.022 \\ 
+  &  & p = 0.917 \\ 
+  & & \\ 
+ Constant & 3.912$^{****}$ & $-$0.631 \\ 
+  & p = 0.000 & p = 0.592 \\ 
+  & & \\ 
+\hline \\[-1.8ex] 
+Observations & 180 & 180 \\ 
+R$^{2}$ & 0.001 & 0.121 \\ 
+Adjusted R$^{2}$ & $-$0.005 & 0.085 \\ 
+Residual Std. Error & 1.490 (df = 178) & 1.422 (df = 172) \\ 
+F Statistic & 0.123 (df = 1; 178) & 3.375$^{***}$ (df = 7; 172) \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{2}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+\end{tabular} 
+\end{table} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+

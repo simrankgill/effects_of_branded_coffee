@@ -73,7 +73,8 @@ treatment<- treatment %>%
 There are more participants in Control than in Treatment groups. To help create balance between the two groups, will perform random sampling to match the size of the treatment group.
 
 ```{r }
-print("Before Random Sampling:")
+#print("Before Random Sampling:")
+print("Control and Treatment sizes")
 cat("Control size:", nrow(control))
 cat("\nTreatment size:", nrow(treatment))
 
@@ -120,7 +121,20 @@ str(d)
 
 ## Exploratory Data Analysis
 
+```{r covariate imbalance}
+#install.packages("cobalt")
+library(cobalt)
 
+balance_table <- bal.tab(treatment ~ age + age_group + gender + chameleon_awareness_flag + good_and_gather_awareness_flag + hot_or_cold + sweet_or_not_sweet + how_often_drink_coffee, data = d)
+
+balance_table
+
+```
+Based on the results above, and assuming > |0.1| as a moderate imbalance, with > |0.25| as a significant imbalance, we have no significantly imbalance variables, but:
+- Moderately more cold coffee preference in Treatment than Control (and less hot coffee preference)
+- Moderately less 'often' coffee drinkers and more occasional drinkers
+- Moderately more awareness in Chameleon
+- Moderately more people in the 31-40 age range, and less in 20-30
 
 ```{r box plot for age}
 # box plot for age by treatment and control
@@ -155,6 +169,26 @@ ggplot(d, aes(x = as.factor(treatment), fill = age_group)) +
   ) +
   theme_minimal()
 ```
+```{r treatment by age group percentage}
+ggplot(d, aes(x = as.factor(treatment), fill = age_group)) +
+  geom_bar(position = "fill") +  
+  labs(
+    title = "% Age Group by Control and Treatment",
+    x = "Treatment Group",
+    y = "Proportion"
+  ) +
+  scale_x_discrete(
+    labels = c("0" = "Control", "1" = "Treatment")
+  ) +
+  scale_fill_manual(
+    values = c("#065143", "#129490", "#70B77E", "#E0A890", "#CE1483"),
+    name = "Age Group"
+  ) +
+  theme_minimal()
+
+
+```
+
 
 ```{r brand awarenenss chameleon}
 ggplot(d, aes(x = as.factor(treatment), fill = chameleon_awareness)) +
@@ -173,14 +207,49 @@ ggplot(d, aes(x = as.factor(treatment), fill = chameleon_awareness)) +
   ) +
   theme_minimal()
 ```
-```{r brand awareness good and gather}
+```{r brand awareness good and gather percentage}
+ggplot(d, aes(x = as.factor(treatment), fill = chameleon_awareness)) +
+  geom_bar(position = "fill") +
+  labs(
+    title = "% Chameleon Awareness by Control and Treatment",
+    x = "Treatment Group",
+    y = "Proportion"
+  ) +
+  scale_x_discrete(
+    labels = c("0" = "Control", "1" = "Treatment")
+  ) +
+  scale_fill_manual(
+    values = c("#70D6FF", "#FF70A6", "#FF9770", "#FFD670"),
+    name = "Chameleon Awareness"
+  ) +
+  theme_minimal()
+```
 
+
+```{r brand awareness good and gather}
 ggplot(d, aes(x = as.factor(treatment), fill = good_and_gather_awareness)) +
   geom_bar(position = "stack") +
   labs(
     title = "Good & Gather Awareness by Control and Treatment",
     x = "Treatment Group",
     y = "Count"
+  ) +
+  scale_x_discrete(
+    labels = c("0" = "Control", "1" = "Treatment")
+  ) +
+  scale_fill_manual(
+    values = c("#70D6FF", "#FF70A6", "#FF9770", "#FFD670"),
+    name = "Good & Gather Awareness"
+  ) +
+  theme_minimal()
+```
+```{r good and gather awareness percentage}
+ggplot(d, aes(x = as.factor(treatment), fill = good_and_gather_awareness)) +
+  geom_bar(position = "fill") +
+  labs(
+    title = "Good & Gather Awareness by Control and Treatment",
+    x = "Treatment Group",
+    y = "Proportion"
   ) +
   scale_x_discrete(
     labels = c("0" = "Control", "1" = "Treatment")
